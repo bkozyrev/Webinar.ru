@@ -12,12 +12,16 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final float FAB_ALPHA_WHILE_NOT_RECORDING = 1.0f;
+    private static final float FAB_ALPHA_WHILE_RECORDING = 0.7f;
+
     private Camera mCamera;
     private CameraPreview mPreview;
 
-    private boolean isRecording;
+    private boolean mIsRecording;
 
-    private FrameLayout frameLayout;
+    private FrameLayout mFrameLayout;
+    private FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,31 +30,46 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
+        mFrameLayout = (FrameLayout) findViewById(R.id.frameLayout);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
 
-        isRecording = false;
+        mIsRecording = false;
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isRecording) {
-                    fab.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_videocam_black_24dp));
-
-                    mCamera = getCameraInstance();
-                    mPreview = new CameraPreview(getBaseContext(), mCamera);
-                    frameLayout.addView(mPreview);
-
-                    isRecording = true;
-                }
-                else{
-                    fab.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_videocam_white_24dp));
-                    frameLayout.removeView(mPreview);
-
-                    isRecording = false;
+                if (!mIsRecording) {
+                    startRecording();
+                } else {
+                    stopRecording();
                 }
             }
         });
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        stopRecording();
+    }
+
+    public void startRecording(){
+        mFab.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_videocam_black_24dp));
+        mFab.setAlpha(FAB_ALPHA_WHILE_RECORDING);
+
+        mCamera = getCameraInstance();
+        mPreview = new CameraPreview(getBaseContext(), mCamera);
+        mFrameLayout.addView(mPreview);
+
+        mIsRecording = true;
+    }
+
+    public void stopRecording(){
+        mFab.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_videocam_white_24dp));
+        mFab.setAlpha(FAB_ALPHA_WHILE_NOT_RECORDING);
+        mFrameLayout.removeView(mPreview);
+
+        mIsRecording = false;
     }
 
     public Camera getCameraInstance(){
