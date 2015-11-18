@@ -6,8 +6,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
-import java.io.IOException;
-
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final int CAMERA_ROTATE_DEGREE = 90;
@@ -33,15 +31,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             mCamera.setPreviewDisplay(holder);
             mCamera.setDisplayOrientation(CAMERA_ROTATE_DEGREE);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Toast.makeText(mContext, "Error setting camera preview", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
         stopPreview();
-        mCamera.release();
-        mCamera = null;
     }
 
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -58,6 +54,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public void stopPreview() {
         if (mPreviewIsRunning && (mCamera != null)) {
             mCamera.stopPreview();
+            mCamera.release();
+            mCamera = null;
             mPreviewIsRunning = false;
         }
     }
