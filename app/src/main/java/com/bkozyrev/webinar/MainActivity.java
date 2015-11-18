@@ -3,6 +3,7 @@ package com.bkozyrev.webinar;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -34,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(!isRecording) {
-                    fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_videocam_black_24dp));
+                    fab.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_videocam_black_24dp));
+
                     mCamera = getCameraInstance();
                     mPreview = new CameraPreview(getBaseContext(), mCamera);
                     frameLayout.addView(mPreview);
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                     isRecording = true;
                 }
                 else{
-                    fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_videocam_white_24dp));
+                    fab.setImageDrawable(ContextCompat.getDrawable(getBaseContext(), R.drawable.ic_videocam_white_24dp));
                     frameLayout.removeView(mPreview);
 
                     isRecording = false;
